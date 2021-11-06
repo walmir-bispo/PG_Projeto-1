@@ -9,19 +9,19 @@ int mov = 1;
 //arco de 0 graus inicialmente
 float arco = 0;
 
-// coordenadas da esfera
-float y = 100;
-
 // coordenadas dos pontos
 float Ax = 400, Ay = 100, Az = 0;
 float Bx = -100, By = 50/3, Bz = 500;
 float Cx = 0, Cy = 0, Cz = 600;
 float Dx = 100, Dy = -50/3, Dz = 500;
 
+// coordenada y da esfera
+float SphereY = 100;
+
 //velocidade angular
 float w = 0;
 
-// velocidade linear
+// velocidade linear - Velocidade com que movemos a esfera em relacao a Y
 float v = 0;
 
 int framerate = 60;
@@ -53,7 +53,7 @@ void draw(){
    line(0, 0, 0, 0, 0, 1000);
   
   
-   setSpeed(mov);
+   mudarVelocidade(mov);
     
    //Movimento do ponto A até B - 3s
    if(mov == 1) movAB();
@@ -66,72 +66,73 @@ void draw(){
 
 
 //Cada movimento tem uma duração determinada, logo é necessário ajustar a velocidade da animação em cada um deles
-void setSpeed(int mov){
+void mudarVelocidade(int mov){
   if(mov == 1 || mov == 3){
     w = (0.5235987/framerate); // w = (arco/tempo) / framerate 
-    v = 0.46296; //saber oq pq disso
+    v = 0.5; //Velocidade com que movemos a esfera em relacao a Y
   }else if(mov == 2){
     w = 1.0471975/framerate;
-    v = 0.27778;
+    v = 0.3;
   }
 }
 
 
 void movAB(){
-  translate(400, y, 500);
+  translate(400, SphereY, 500);
   rotateY(arco);
-  translate(-400, -y, -500);
+  translate(-400, -SphereY, -500);
   
-  translate(Ax,y,Az);
+  translate(Ax,SphereY,Az);
   noStroke();
   fill(255,0,0);
   sphere(20);
   
   if(arco <  PI/2){
     arco += w;
-    y -= v; // translacao do movimento em relacao a coordenada y
+    SphereY -= v; // translacao do movimento em relacao a coordenada y
   }else{
-   mov = 2;
+   mov = 2; // Ao chegar num arco de 90º, muda para o movimento BD
    arco = w;
   }
 }
 
 void movBD(){
-  translate(0, y, 500);
+  translate(0, SphereY, 500);
   rotateY(arco);
-  translate(0, -y,-500);
+  translate(0, -SphereY,-500);
   
   //Esfera fica verde no mov BD
-  translate(Bx,y,Bz);
+  translate(Bx,SphereY,Bz);
   noStroke();
   fill(0,255,0);
   sphere(20);
   
   if(arco <  PI){
     arco += w;
-    y -= v; // translacao do movimento em relacao a coordenada y
+    SphereY -= v; // translacao do movimento em relacao a coordenada y
   }else{
-   mov = 3;
+   mov = 3; // Ao chegar num arco de 180º, muda para o movimento DE
    arco = w;
   }
 }
 
 void movDE(){
-  translate(-400, -y, 500);
+  translate(-400, -SphereY, 500);
   rotateY(arco);
-  translate(400,y,-500);
+  translate(400,SphereY,-500);
   
   //Esfera fica azul no mov DE
-  translate(Dx,y,Dz);
+  translate(Dx,SphereY,Dz);
   noStroke();
   fill(0,0,255);
   sphere(20);
   
   if(arco <  PI/2){
     arco += w;
-    y -= v; // translacao do movimento em relacao a coordenada y
+    SphereY -= v; // translacao do movimento em relacao a coordenada y
   }else{
    mov = -1; //fim da animacao
+   exit();
   }
   
 }
